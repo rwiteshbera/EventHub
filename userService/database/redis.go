@@ -9,10 +9,10 @@ import (
 
 var Ctx = context.Background()
 
-func CreateClient(config *config.Config, databaseNumber int) *redis.Client {
+func CreateRedisClient(config *config.Config, databaseNumber int) *redis.Client {
 	redisClient := redis.NewClient(&redis.Options{
-		Addr:     config.DB_ADDRESS,
-		Password: config.DB_PASSWORD,
+		Addr:     config.REDIS_DB_ADDRESS,
+		Password: config.REDIS_DB_PASSWORD,
 		DB:       databaseNumber,
 	})
 

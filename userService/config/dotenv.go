@@ -7,10 +7,11 @@ import (
 )
 
 type Config struct {
-	DB_ADDRESS  string
-	DB_PASSWORD string
-	SERVER_HOST string
-	SERVER_PORT string
+	REDIS_DB_ADDRESS  string
+	REDIS_DB_PASSWORD string
+	MONGO_DB_URI      string
+	SERVER_HOST       string
+	SERVER_PORT       string
 }
 
 func LoadConfig() (*Config, error) {
@@ -20,10 +21,11 @@ func LoadConfig() (*Config, error) {
 	}
 
 	config := &Config{
-		DB_ADDRESS:  os.Getenv("DB_ADDRESS"),
-		DB_PASSWORD: os.Getenv("DB_PASSWORD"),
-		SERVER_HOST: os.Getenv("SERVER_HOST"),
-		SERVER_PORT: os.Getenv("SERVER_PORT"),
+		REDIS_DB_ADDRESS:  os.Getenv("REDIS_DB_ADDRESS"),
+		REDIS_DB_PASSWORD: os.Getenv("REDIS_DB_PASSWORD"),
+		MONGO_DB_URI:      os.Getenv("MONGO_DB_URI"),
+		SERVER_HOST:       os.Getenv("SERVER_HOST"),
+		SERVER_PORT:       os.Getenv("SERVER_PORT"),
 	}
 
 	return config, nil
