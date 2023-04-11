@@ -12,6 +12,7 @@ type Config struct {
 	MONGO_DB_URI      string
 	SERVER_HOST       string
 	SERVER_PORT       string
+	JWT_SECRET        string
 }
 
 func LoadConfig() (*Config, error) {
@@ -26,6 +27,7 @@ func LoadConfig() (*Config, error) {
 		MONGO_DB_URI:      os.Getenv("MONGO_DB_URI"),
 		SERVER_HOST:       os.Getenv("SERVER_HOST"),
 		SERVER_PORT:       os.Getenv("SERVER_PORT"),
+		JWT_SECRET:        os.Getenv("JWT_SECRET"),
 	}
 
 	return config, nil

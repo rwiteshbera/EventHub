@@ -6,6 +6,6 @@ import (
 )
 
 func AuthenticationRoutes(server *api.Server) {
-	server.Router.POST("/user/login", controllers.Signup(server))
+	server.Router.POST("/user/login", controllers.Login(server))
 	server.Router.POST("/user/verify", controllers.VerifyOTP(server))
 }

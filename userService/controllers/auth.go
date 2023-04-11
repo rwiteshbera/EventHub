@@ -14,10 +14,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-var tokenExpiry time.Duration = 5 * time.Minute // Token Expiry
-var sessionIdMaxAge int = 2 * 60                // 2 minutes
+var tokenExpiry time.Duration = 2 * time.Minute // Token Expiry
+var tokenIdMaxAge int = 2 * 60                  // 2 minutes
 
-func Signup(server *api.Server) gin.HandlerFunc {
+func Login(server *api.Server) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var userLoginRequest models.UserLogin
 
@@ -29,8 +29,8 @@ func Signup(server *api.Server) gin.HandlerFunc {
 		}
 
 		// Make sure no field is empty
-		if userLoginRequest.Name == "" || userLoginRequest.Email == "" {
-			LogError(ctx, http.StatusBadRequest, errors.New("please make sure all fields are filled in correctly"))
+		if userLoginRequest.Email == "" {
+			LogError(ctx, http.StatusBadRequest, errors.New("please make sure email is filled in correctly"))
 			return
 		}
 
@@ -52,8 +52,7 @@ func Signup(server *api.Server) gin.HandlerFunc {
 			return
 		}
 
-		// Set cookies [name, email]
-		ctx.SetCookie("name", userLoginRequest.Name, 0, "/", server.Config.SERVER_HOST, false, true)
+		// Set cookies [email]
 		ctx.SetCookie("email", userLoginRequest.Email, 0, "/", server.Config.SERVER_HOST, false, true)
 
 		LogMessage(ctx, userLoginRequest)
@@ -70,12 +69,7 @@ func VerifyOTP(server *api.Server) gin.HandlerFunc {
 			return
 		}
 
-		// Get cookies [name, email]
-		currentUserName, err0 := ctx.Cookie("name")
-		if err0 != nil {
-			LogError(ctx, http.StatusBadRequest, err0)
-			return
-		}
+		// Get cookies [email]
 		currentUserEmail, err0 := ctx.Cookie("email")
 		if err0 != nil {
 			LogError(ctx, http.StatusBadRequest, err0)
@@ -105,7 +99,7 @@ func VerifyOTP(server *api.Server) gin.HandlerFunc {
 
 		// Insert user data in MongoDB if it is not present
 		if count < 1 {
-			_, err3 := userCollection.InsertOne(dbContext, models.UserLogin{Name: currentUserName, Email: currentUserEmail})
+			_, err3 := userCollection.InsertOne(dbContext, models.User{Email: currentUserEmail})
 			if err3 != nil {
 				LogError(ctx, http.StatusInternalServerError, err3)
 				return
@@ -131,18 +125,22 @@ func VerifyOTP(server *api.Server) gin.HandlerFunc {
 				return
 			}
 
-			sessionId := utils.GenerateSessionId(currentUserEmail)
+			// Generate JWT Token
+			token, err6 := utils.GenerateToken(currentUserEmail, server.Config.JWT_SECRET)
+			if err6 != nil {
+				LogError(ctx, http.StatusInternalServerError, errors.New("something went wrong"))
+				return
+			}
+
 			// If otp is valid
 			if savedOTP == userOtp.Otp {
 
 				redisDB.Del(ctx, currentUserEmail) // After validation, delete the OTP from Redis
 
-				// store sessionId in redis for authorization check
+				// set the token in context
+				ctx.Request.Header.Set("token", token)
 
-				// set a cookie for authorization
-				ctx.SetCookie("session", sessionId, sessionIdMaxAge, "/", server.Config.SERVER_HOST, false, true)
-
-				ctx.JSON(http.StatusOK, gin.H{"message": "verified", "sessionId": sessionId, "count": count})
+				ctx.JSON(http.StatusOK, gin.H{"message": "verified", "count": count})
 
 			} else {
 				ctx.JSON(http.StatusOK, gin.H{"message": "incorrect otp"})
