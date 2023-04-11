@@ -13,6 +13,7 @@ func main() {
 	}
 
 	routes.AuthenticationRoutes(server)
+	routes.DataRoutes(server)
 
 	err = server.Start()
 	if err != nil {

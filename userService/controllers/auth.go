@@ -15,7 +15,6 @@ import (
 )
 
 var tokenExpiry time.Duration = 2 * time.Minute // Token Expiry
-var tokenIdMaxAge int = 2 * 60                  // 2 minutes
 
 func Login(server *api.Server) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
@@ -138,9 +137,9 @@ func VerifyOTP(server *api.Server) gin.HandlerFunc {
 				redisDB.Del(ctx, currentUserEmail) // After validation, delete the OTP from Redis
 
 				// set the token in context
-				ctx.Request.Header.Set("token", token)
+				ctx.Request.Header.Set("authorization", token)
 
-				ctx.JSON(http.StatusOK, gin.H{"message": "verified", "count": count})
+				ctx.JSON(http.StatusOK, gin.H{"message": "verified", "count": count, "auth": token})
 
 			} else {
 				ctx.JSON(http.StatusOK, gin.H{"message": "incorrect otp"})
