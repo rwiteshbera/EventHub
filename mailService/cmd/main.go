@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"mailService/api"
+	"mailService/kafkaconsumer"
 	"mailService/mailer"
 	"net/http"
 
@@ -38,6 +39,8 @@ func main() {
 		ctx.JSON(http.StatusOK, gin.H{"message": "email sent successfully!"})
 
 	})
+
+	go kafkaconsumer.ConsumeOTP()
 
 	err = server.Start()
 	if err != nil {
