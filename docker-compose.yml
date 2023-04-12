@@ -12,15 +12,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - go-network
+
   mongodb:
     image: mongo:latest
     ports:
       - 27017:27017
-    networks:
-      - go-network
 
-networks:
-  go-network:
-    driver: bridge
+
