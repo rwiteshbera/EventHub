@@ -7,7 +7,6 @@ import (
 	"time"
 	"userService/api"
 	"userService/database"
-	kafka_producer "userService/kafkaProducer"
 	"userService/models"
 	"userService/utils"
 
@@ -54,9 +53,6 @@ func Login(server *api.Server) gin.HandlerFunc {
 
 		// Set cookies [email]
 		ctx.SetCookie("email", userLoginRequest.Email, 0, "/", server.Config.SERVER_HOST, false, true)
-
-		//send otp to kafka topic
-		go kafka_producer.ProduceOTP(kafka_producer.OTP_Payload{Otp: otp, Email: userLoginRequest.Email})
 
 		LogMessage(ctx, userLoginRequest)
 	}
