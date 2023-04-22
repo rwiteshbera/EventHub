@@ -21,6 +21,10 @@ func main() {
 		log.Fatalln("unable to create server: ", err.Error())
 	}
 
+	server.Router.GET("/", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{"mailService": "success"})
+	})
+
 	server.Router.POST("/mail", func(ctx *gin.Context) {
 		var email Email
 

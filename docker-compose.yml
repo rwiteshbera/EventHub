@@ -1,6 +1,19 @@
 version: "3"
 
 services:
+  user-server:
+    build: ./userService
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+      - mongodb 
+
+  mail-server:
+    build: ./mailService
+    ports:
+      - "5001:5001"
+
   redis:
     image: redis:7.0.10-alpine
     ports:
