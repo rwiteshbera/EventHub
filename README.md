@@ -7,4 +7,7 @@ EventSpot
 4. MongoDB
 5. Docker
 
+```bash
+ocker-compose -f docker-compose.yaml -f memphis.yaml up 
+```
 
