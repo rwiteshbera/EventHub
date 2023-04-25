@@ -3,21 +3,28 @@ version: "3"
 services:
   user-server:
     build: ./userService
+    container_name: userService
     ports:
-      - "5000:5000"
+      - 5000:5000
     depends_on:
       - redis
       - mongodb 
+    env_file:
+      - ./userService/.env
 
   mail-server:
-    build: ./mailService
+    build: ./emailService
+    container_name: emailService
+    env_file:
+      - ./emailService/.env
     ports:
-      - "5001:5001"
+      - 5001:5001
 
   redis:
     image: redis:7.0.10-alpine
+    container_name: redis
     ports:
-      - "6379:6379"
+      - 6379:6379
     environment:
       - REDIS_PASSWORD=
     healthcheck:
@@ -28,7 +35,8 @@ services:
 
   mongodb:
     image: mongo:latest
+    container_name: mongodb
     ports:
       - 27017:27017
 
-
+  

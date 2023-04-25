@@ -1,6 +1,7 @@
 package mailer
 
 import (
+	"errors"
 	"fmt"
 	"mailService/config"
 	"net/smtp"
@@ -15,6 +16,9 @@ type Mail struct {
 }
 
 func SendMail(toMail string, subject string, body string, config config.Config) error {
+	if toMail == "" || subject == "" || body == "" {
+		return errors.New("required parameters and cannot be empty")
+	}
 	// Sender Data
 	senderMail := config.SENDER_GMAIL
 	senderPassword := config.SENDER_PASSWORD

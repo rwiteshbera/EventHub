@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 	"userService/api"
+	"userService/broker"
 	"userService/database"
 	"userService/models"
 	"userService/utils"
@@ -53,6 +54,9 @@ func Login(server *api.Server) gin.HandlerFunc {
 
 		// Set cookies [email]
 		ctx.SetCookie("email", userLoginRequest.Email, 0, "/", server.Config.SERVER_HOST, false, true)
+
+		// Send it to memphis
+		broker.ProduceMessage(userLoginRequest.Email, otp, &server.Config)
 
 		LogMessage(ctx, userLoginRequest)
 	}
