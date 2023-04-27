@@ -8,17 +8,19 @@ services:
       - 5000:5000
     depends_on:
       - redis
-      - mongodb 
+      - mongodb
+    restart: on-failure
     env_file:
       - ./userService/.env
 
   mail-server:
     build: ./emailService
     container_name: emailService
-    env_file:
-      - ./emailService/.env
     ports:
       - 5001:5001
+    restart: always
+    env_file:
+      - ./emailService/.env
 
   redis:
     image: redis:7.0.10-alpine
@@ -28,7 +30,7 @@ services:
     environment:
       - REDIS_PASSWORD=
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -38,5 +40,3 @@ services:
     container_name: mongodb
     ports:
       - 27017:27017
-
-  

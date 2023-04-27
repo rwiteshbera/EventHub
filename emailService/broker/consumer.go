@@ -2,26 +2,20 @@ package broker
 
 import (
 	"context"
+	"fmt"
 	"mailService/config"
 	"mailService/mailer"
-	"time"
 
 	"github.com/memphisdev/memphis.go"
 )
 
-func ConsumeMessage(config *config.Config) error {
-	conn, err := memphis.Connect(config.MEMPHIS_HOST, config.MEMPHIS_USERNAME, memphis.Password(config.MEMPHIS_PASSWORD))
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
-
-	consumer, err := conn.CreateConsumer("authStation", "otpProducer", memphis.PullInterval(1*time.Second))
-	if err != nil {
-		return err
-	}
+func ConsumeMessage(consumer *memphis.Consumer, config *config.Config) error {
 
 	handler := func(msgs []*memphis.Msg, err error, ctx context.Context) {
+		if err != nil {
+			fmt.Printf("Fetch failed: %s\n", err.Error())
+			return
+		}
 		for _, msg := range msgs {
 			// fmt.Println(string(msg.Data()))
 			msg.Ack()
@@ -29,15 +23,23 @@ func ConsumeMessage(config *config.Config) error {
 			// fmt.Println(headers["email"])
 			// fmt.Println(headers["otp"])
 
-			mailer.SendMail(headers["email"], "EventHub OTP", headers["otp"], *config)
+			err = mailer.SendMail(headers["email"], "EventHub OTP", headers["otp"], *config)
+			if err != nil {
+				fmt.Printf("Send mail failed: %s\n", err.Error())
+				continue
+			}
 		}
 	}
 
-	err = consumer.Consume(handler)
+	forever := make(chan bool)
+
+	err := consumer.Consume(handler)
 	if err != nil {
 		return err
 	}
 
-	time.Sleep(5 * time.Minute)
+	// Reference : https://stackoverflow.com/questions/47262088/golang-forever-channel
+	<-forever // To run the consumer forever
+
 	return nil
 }
