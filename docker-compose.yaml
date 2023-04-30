@@ -10,8 +10,6 @@ services:
       - redis
       - mongodb
     restart: on-failure
-    env_file:
-      - ./userService/.env
 
   mail-server:
     build: ./emailService
@@ -21,8 +19,6 @@ services:
     depends_on:
       - memphis-rest-gateway
     restart: on-failure
-    env_file:
-      - ./emailService/.env
 
   redis:
     image: redis:7.0.10-alpine
