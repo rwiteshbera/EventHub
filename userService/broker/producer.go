@@ -2,7 +2,6 @@ package broker
 
 import (
 	"fmt"
-	"os"
 	"userService/config"
 
 	"github.com/memphisdev/memphis.go"
@@ -12,7 +11,7 @@ import (
 func ProduceMessage(email, otp string, config *config.Config) bool {
 	conn, err := memphis.Connect(config.MEMPHIS_HOST, config.MEMPHIS_USERNAME, memphis.Password(config.MEMPHIS_PASSWORD))
 	if err != nil {
-		os.Exit(1)
+		return false
 	}
 	defer conn.Close()
 	p, err := conn.CreateProducer("authStation", "otpProducer")

@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"errors"
+	"github.com/redis/go-redis/v9"
 	"net/http"
 	"time"
 	"userService/api"
@@ -36,7 +37,13 @@ func Login(server *api.Server) gin.HandlerFunc {
 
 		// Create redis client
 		redisDB := database.CreateRedisClient(&server.Config, 0)
-		defer redisDB.Close()
+		defer func(redisDB *redis.Client) {
+			err := redisDB.Close()
+			if err != nil {
+				LogError(ctx, http.StatusInternalServerError, err)
+				return
+			}
+		}(redisDB)
 
 		// Generate OTP
 		otp, err2 := utils.GenerateOTP()
@@ -56,7 +63,11 @@ func Login(server *api.Server) gin.HandlerFunc {
 		ctx.SetCookie("email", userLoginRequest.Email, 0, "/", server.Config.SERVER_HOST, false, true)
 
 		// Send it to memphis
-		broker.ProduceMessage(userLoginRequest.Email, otp, &server.Config)
+		message := broker.ProduceMessage(userLoginRequest.Email, otp, &server.Config)
+		if !message {
+			LogError(ctx, http.StatusInternalServerError, errors.New("unable to send email"))
+			return
+		}
 
 		LogMessage(ctx, userLoginRequest)
 	}

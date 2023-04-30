@@ -9,8 +9,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    # networks:
-    #   - memphis
     ports:
       - '5005:5005'
     environment:
@@ -18,9 +16,8 @@ services:
       - POSTGRESQL_PASSWORD=memphis
       - POSTGRESQL_DATABASE=memphis
       - POSTGRESQL_PORT_NUMBER=5005
-
   memphis:
-    image: "memphisos/memphis:stable"
+    image: "memphisos/memphis:latest"
     container_name: memphis
     depends_on:
       memphis-metadata:
@@ -32,8 +29,6 @@ services:
       start_period: 5s
     restart: on-failure
     pull_policy: always
-    # networks:
-    #   - memphis
     ports:
       - "9000:9000"
       - "6666:6666"
@@ -47,7 +42,7 @@ services:
       - METADATA_DB_HOST=memphis-metadata
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      
+
   memphis-rest-gateway:
     image: "memphisos/memphis-rest-gateway:latest"
     container_name: memphis-rest-gateway
@@ -56,8 +51,6 @@ services:
         condition: service_healthy
     restart: on-failure
     pull_policy: always
-    # networks:
-    #   - memphis
     ports:
       - "4444:4444"
     environment:
@@ -69,8 +62,3 @@ services:
       - ROOT_PASSWORD=memphis
       - MEMPHIS_HOST=memphis
       - HTTP_PORT=4444
-      
-# networks:
-#   memphis:
-#     ipam:
-#       driver: default
