@@ -12,15 +12,12 @@ type Server struct {
 }
 
 func CreateServer() (*Server, error) {
-	config, err := config.LoadConfig()
-	if err != nil {
-		return nil, err
-	}
+	Config := config.LoadConfig()
 
 	gin.SetMode(gin.ReleaseMode)
 
 	server := &Server{
-		Config: *config,
+		Config: *Config,
 		Router: gin.Default(),
 	}
 	server.Router.Use(gin.Recovery())

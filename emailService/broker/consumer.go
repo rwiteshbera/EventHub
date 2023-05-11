@@ -12,10 +12,6 @@ import (
 func ConsumeMessage(consumer *memphis.Consumer, config *config.Config) error {
 
 	handler := func(msgs []*memphis.Msg, err error, ctx context.Context) {
-		if err != nil {
-			fmt.Printf("Fetch failed: %s\n", err.Error())
-			return
-		}
 		for _, msg := range msgs {
 			// fmt.Println(string(msg.Data()))
 			msg.Ack()

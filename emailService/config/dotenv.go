@@ -1,6 +1,8 @@
 package config
 
 import (
+	"fmt"
+	"github.com/joho/godotenv"
 	"os"
 )
 
@@ -14,7 +16,12 @@ type Config struct {
 	MEMPHIS_USERNAME string
 }
 
-func LoadConfig() (*Config, error) {
+func LoadConfig() *Config {
+	err := godotenv.Load(".env")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
 	config := &Config{
 		SENDER_GMAIL:     os.Getenv("SENDER_GMAIL"),
 		SENDER_PASSWORD:  os.Getenv("SENDER_PASSWORD"),
@@ -25,5 +32,5 @@ func LoadConfig() (*Config, error) {
 		MEMPHIS_PASSWORD: os.Getenv("MEMPHIS_PASSWORD"),
 	}
 
-	return config, nil
+	return config
 }

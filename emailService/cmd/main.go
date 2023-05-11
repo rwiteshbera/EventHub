@@ -15,13 +15,10 @@ var (
 )
 
 func main() {
-	config, err := config.LoadConfig()
-	if err != nil {
-		log.Panic(err.Error())
-	}
+	Config := config.LoadConfig()
 
 	// Connect to memphis broker
-	conn, err := memphis.Connect(config.MEMPHIS_HOST, config.MEMPHIS_USERNAME, memphis.Password(config.MEMPHIS_PASSWORD))
+	conn, err := memphis.Connect(Config.MEMPHIS_HOST, Config.MEMPHIS_USERNAME, memphis.Password(Config.MEMPHIS_PASSWORD))
 	if err != nil {
 		log.Println("1" + err.Error())
 	}
@@ -34,7 +31,7 @@ func main() {
 	}
 
 	// Consume messages and send email
-	err = broker.ConsumeMessage(consumer, config)
+	err = broker.ConsumeMessage(consumer, Config)
 	if err != nil {
 		log.Println("3" + err.Error())
 	}
