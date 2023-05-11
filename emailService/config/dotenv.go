@@ -2,8 +2,6 @@ package config
 
 import (
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -17,11 +15,6 @@ type Config struct {
 }
 
 func LoadConfig() (*Config, error) {
-	err := godotenv.Load(".env")
-	if err != nil {
-		return nil, err
-	}
-
 	config := &Config{
 		SENDER_GMAIL:     os.Getenv("SENDER_GMAIL"),
 		SENDER_PASSWORD:  os.Getenv("SENDER_PASSWORD"),

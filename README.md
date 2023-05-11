@@ -8,6 +8,6 @@ EventSpot
 5. Docker
 
 ```bash
-docker-compose -f docker-compose.yaml -f memphis.yaml up 
+docker-compose up 
 ```
 

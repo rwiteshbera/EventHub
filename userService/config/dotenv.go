@@ -2,8 +2,6 @@ package config
 
 import (
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -19,11 +17,6 @@ type Config struct {
 }
 
 func LoadConfig() (*Config, error) {
-	err := godotenv.Load(".env")
-	if err != nil {
-		return nil, err
-	}
-
 	config := &Config{
 		REDIS_DB_ADDRESS:  os.Getenv("REDIS_DB_ADDRESS"),
 		REDIS_DB_PASSWORD: os.Getenv("REDIS_DB_PASSWORD"),
