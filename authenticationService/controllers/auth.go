@@ -1,16 +1,16 @@
 package controllers
 
 import (
+	"authenticationService/api"
+	"authenticationService/broker"
+	"authenticationService/database"
+	"authenticationService/models"
+	"authenticationService/utils"
 	"context"
 	"errors"
 	"github.com/redis/go-redis/v9"
 	"net/http"
 	"time"
-	"userService/api"
-	"userService/broker"
-	"userService/database"
-	"userService/models"
-	"userService/utils"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"

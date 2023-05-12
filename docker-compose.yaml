@@ -2,8 +2,8 @@ version: "3"
 
 services:
   user-server:
-    build: ./userService
-    container_name: userService
+    build: ./authenticationService
+    container_name: authenticationService
     ports:
       - "5000:5000"
     depends_on:
@@ -11,7 +11,7 @@ services:
       - mongodb
     restart: on-failure
     env_file:
-      - ./userService/.env
+      - ./authenticationService/.env
 
   mail-server:
     build: ./emailService

@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	stationName  = "authStation"
-	consumerName = "otpProducer"
+	stationName  = "auth"
+	consumerName = "otpConsumer"
 )
 
 func main() {

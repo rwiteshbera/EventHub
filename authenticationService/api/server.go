@@ -1,7 +1,7 @@
 package api
 
 import (
-	"userService/config"
+	"authenticationService/config"
 
 	"github.com/gin-gonic/gin"
 )

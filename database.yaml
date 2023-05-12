@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  redis:
+    image: redis:7.0.10-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: on-failure
+    ports:
+      - "27017:27017"
+
+
+
+
+
+
+
