@@ -1,4 +1,4 @@
-module authenticationService
+module userService
 
 go 1.20
 

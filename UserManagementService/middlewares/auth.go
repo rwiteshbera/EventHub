@@ -1,8 +1,8 @@
 package middlewares
 
 import (
-	"authenticationService/utils"
 	"net/http"
+	"userService/utils"
 
 	"github.com/gin-gonic/gin"
 )

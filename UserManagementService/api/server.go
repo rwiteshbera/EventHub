@@ -1,7 +1,8 @@
 package api
 
 import (
-	"authenticationService/config"
+	"net/http"
+	"userService/config"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,6 +22,10 @@ func CreateServer() (*Server, error) {
 		Router: gin.Default(),
 	}
 	server.Router.Use(gin.Recovery())
+
+	server.Router.GET("/", func(context *gin.Context) {
+		context.JSON(http.StatusOK, gin.H{"service": "UserManagementService", "status": http.StatusOK})
+	})
 
 	return server, nil
 }

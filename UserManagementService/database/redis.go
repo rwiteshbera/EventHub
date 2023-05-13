@@ -1,8 +1,8 @@
 package database
 
 import (
-	"authenticationService/config"
 	"context"
+	"userService/config"
 
 	"github.com/redis/go-redis/v9"
 )

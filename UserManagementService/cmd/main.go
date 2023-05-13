@@ -1,9 +1,9 @@
 package main
 
 import (
-	"authenticationService/api"
-	"authenticationService/routes"
 	"log"
+	"userService/api"
+	"userService/routes"
 )
 
 func main() {

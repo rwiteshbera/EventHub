@@ -2,8 +2,8 @@ version: "3"
 
 services:
   user-server:
-    build: ./authenticationService
-    container_name: authenticationService
+    build: UserManagementService
+    container_name: userService
     ports:
       - "5000:5000"
     depends_on:
@@ -11,18 +11,18 @@ services:
       - mongodb
     restart: on-failure
     env_file:
-      - ./authenticationService/.env
+      - UserManagementService/.env
 
   mail-server:
-    build: ./emailService
-    container_name: emailService
+    build: EmailService
+    container_name: EmailService
     ports:
       - "5001:5001"
     depends_on:
       - memphis-rest-gateway
     restart: on-failure
     env_file:
-      - ./emailService/.env
+      - EmailService/.env
 
   redis:
     image: redis:7.0.10-alpine

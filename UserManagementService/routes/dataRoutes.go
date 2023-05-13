@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"authenticationService/api"
-	"authenticationService/middlewares"
 	"net/http"
+	"userService/api"
+	"userService/middlewares"
 
 	"github.com/gin-gonic/gin"
 )

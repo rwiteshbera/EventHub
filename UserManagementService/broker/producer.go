@@ -1,8 +1,8 @@
 package broker
 
 import (
-	"authenticationService/config"
 	"fmt"
+	"userService/config"
 
 	"github.com/memphisdev/memphis.go"
 )
