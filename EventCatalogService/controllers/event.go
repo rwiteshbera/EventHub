@@ -2,27 +2,48 @@ package controllers
 
 import (
 	"eventCatalogService/api"
-	"fmt"
+	"eventCatalogService/database"
+	"eventCatalogService/models"
+	"eventCatalogService/utils"
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 	"net/http"
 )
 
 func CreateEvent(server *api.Server) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-			server.Config.POSTGRES_HOST, server.Config.POSTGRES_USER, server.Config.POSTGRES_PASSWORD, server.Config.POSTGRES_DB,
-			server.Config.POSTGRES_PORT)
-		_, err := gorm.Open(postgres.New(postgres.Config{
-			DSN: dsn, PreferSimpleProtocol: true,
-		}), &gorm.Config{})
+		var eventInfo models.EventInformation
 
+		db, err := database.ConnectPostgres(server)
 		if err != nil {
-			LogError(ctx, http.StatusInternalServerError, err)
+			LogError(ctx, http.StatusInternalServerError, err, 01)
 			return
 		}
 
-		ctx.JSON(http.StatusOK, gin.H{"message": "success"})
+		err = db.AutoMigrate(&models.EventInformation{})
+		if err != nil {
+			LogError(ctx, http.StatusInternalServerError, err, 02)
+			return
+		}
+
+		err = ctx.ShouldBindJSON(&eventInfo)
+		if err != nil {
+			LogError(ctx, http.StatusBadRequest, err, 03)
+			return
+		}
+
+		eventInfo.ID, err = utils.GenerateUUID()
+		if err != nil {
+			LogError(ctx, http.StatusBadRequest, err, 04)
+			return
+		}
+
+		result := db.Create(&eventInfo)
+		if result.Error != nil {
+			LogError(ctx, http.StatusInternalServerError, result.Error, 05)
+			return
+		}
+
+		ctx.JSON(http.StatusOK, gin.H{"message": eventInfo.ID})
+
 	}
 }

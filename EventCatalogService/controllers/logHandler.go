@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func LogError(context *gin.Context, statusCode int, err error) {
-	context.AbortWithStatusJSON(statusCode, gin.H{"error": err.Error()})
+func LogError(context *gin.Context, statusCode int, err error, errorId uint) {
+	context.AbortWithStatusJSON(statusCode, gin.H{"error": err.Error(), "error_id": errorId})
 }
 
 func LogMessage(context *gin.Context, message any) {
