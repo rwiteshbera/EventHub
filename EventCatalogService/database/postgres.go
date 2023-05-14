@@ -8,7 +8,7 @@ import (
 )
 
 func ConnectPostgres(server *api.Server) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable timezone=Asia/Kolkata",
 		server.Config.POSTGRES_HOST, server.Config.POSTGRES_USER, server.Config.POSTGRES_PASSWORD, server.Config.POSTGRES_DB,
 		server.Config.POSTGRES_PORT)
 	db, err := gorm.Open(postgres.New(postgres.Config{
