@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+// Create a new event
 func CreateEvent(server *api.Server) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var eventInfo models.EventInformation
@@ -45,5 +46,21 @@ func CreateEvent(server *api.Server) gin.HandlerFunc {
 
 		ctx.JSON(http.StatusOK, gin.H{"message": eventInfo.ID})
 
+	}
+}
+
+// List all upcoming events
+func DisplayUpcomingEvents(server *api.Server) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var result []models.EventInformation
+
+		db, err := database.ConnectPostgres(server)
+		if err != nil {
+			LogError(ctx, http.StatusInternalServerError, err, 01)
+			return
+		}
+
+		db.Where("is_online = true").Find(&result)
+		ctx.JSON(http.StatusOK, gin.H{"data": result})
 	}
 }

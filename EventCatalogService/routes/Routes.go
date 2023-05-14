@@ -7,4 +7,5 @@ import (
 
 func Routes(server *api.Server) {
 	server.Router.POST("/event", controllers.CreateEvent(server))
+	server.Router.GET("/event", controllers.DisplayUpcomingEvents(server))
 }
