@@ -13,9 +13,7 @@ type Config struct {
 	SERVER_HOST       string
 	SERVER_PORT       string
 	JWT_SECRET        string
-	MEMPHIS_HOST      string
-	MEMPHIS_PASSWORD  string
-	MEMPHIS_USERNAME  string
+	RABBITMQ          string
 }
 
 func LoadConfig() *Config {
@@ -31,9 +29,7 @@ func LoadConfig() *Config {
 		SERVER_HOST:       os.Getenv("SERVER_HOST"),
 		SERVER_PORT:       os.Getenv("SERVER_PORT"),
 		JWT_SECRET:        os.Getenv("JWT_SECRET"),
-		MEMPHIS_HOST:      os.Getenv("MEMPHIS_HOST"),
-		MEMPHIS_USERNAME:  os.Getenv("MEMPHIS_USERNAME"),
-		MEMPHIS_PASSWORD:  os.Getenv("MEMPHIS_PASSWORD"),
+		RABBITMQ:          os.Getenv("RABBITMQ"),
 	}
 
 	return config

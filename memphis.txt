@@ -1,5 +1,0 @@
-memphis: The broker itself which acts as the data storage layer. That is the component that stores and controls the ingested messages and their entire lifecycle management.
-
-memphis-metadata: Responsible for storing the platform metadata only, such as general information, monitoring, GUI state, and pointers to dead-letter messages. The metadata store uses Postgres.
-
-memphis-rest-gateway: Responsible for exposing Memphis management and data ingestion through REST requests.

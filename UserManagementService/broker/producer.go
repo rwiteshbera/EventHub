@@ -1,45 +1,61 @@
 package broker
 
 import (
-	"fmt"
+	"context"
+	"github.com/rabbitmq/amqp091-go"
+	"log"
 	"userService/config"
-
-	"github.com/memphisdev/memphis.go"
 )
+
+type Body struct {
+	Email string
+	OTP   string
+}
 
 // Send OTP to Memphis
 func ProduceMessage(email, otp string, config *config.Config) bool {
-	conn, err := memphis.Connect(config.MEMPHIS_HOST, config.MEMPHIS_USERNAME, memphis.Password(config.MEMPHIS_PASSWORD))
+	conn, err := amqp091.Dial(config.RABBITMQ)
 	if err != nil {
+		log.Println(err.Error())
 		return false
 	}
 	defer conn.Close()
-	p, err := conn.CreateProducer("auth", "otpProducer")
+
+	ch, err := conn.Channel()
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
+		return false
+	}
+	defer ch.Close()
+
+	// Create a queue to send message
+	queue, err := ch.QueueDeclare(
+		"otp-queue",
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		log.Println(err.Error())
 		return false
 	}
 
-	hdrs := memphis.Headers{}
-	hdrs.New()
-	err = hdrs.Add("email", email)
+	err = ch.PublishWithContext(
+		context.Background(),
+		"",
+		queue.Name,
+		false,
+		false,
+		amqp091.Publishing{
+			ContentType: "text/plain",
+			MessageId:   email,
+			Body:        []byte(otp),
+		})
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 		return false
 	}
-
-	err = hdrs.Add("otp", otp)
-	if err != nil {
-		fmt.Println(err.Error())
-		return false
-	}
-
-	err = p.Produce([]byte("You have a message!"), memphis.MsgHeaders(hdrs))
-
-	if err != nil {
-		fmt.Println(err.Error())
-		return false
-	}
-
 	return true
 }
