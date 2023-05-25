@@ -62,7 +62,7 @@ func Login(server *api.Server) gin.HandlerFunc {
 		// Set cookies [email]
 		ctx.SetCookie("email", userLoginRequest.Email, 0, "/", server.Config.SERVER_HOST, false, true)
 
-		// Send it to memphis
+		// Send it to broker
 		message := broker.ProduceMessage(userLoginRequest.Email, otp, &server.Config)
 		if !message {
 			LogError(ctx, http.StatusInternalServerError, errors.New("unable to send email"))

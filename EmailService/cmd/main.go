@@ -1,39 +1,56 @@
 package main
 
 import (
+	"fmt"
+	"github.com/rabbitmq/amqp091-go"
 	"log"
-	"mailService/broker"
 	"mailService/config"
-	"time"
-
-	"github.com/memphisdev/memphis.go"
-)
-
-var (
-	stationName  = "auth"
-	consumerName = "otpConsumer"
 )
 
 func main() {
 	Config := config.LoadConfig()
 
-	// Connect to memphis broker
-	conn, err := memphis.Connect(Config.MEMPHIS_HOST, Config.MEMPHIS_USERNAME, memphis.Password(Config.MEMPHIS_PASSWORD))
+	conn, err := amqp091.Dial(Config.RABBITMQ)
+	fmt.Println(Config.RABBITMQ)
 	if err != nil {
-		log.Println("1" + err.Error())
+		log.Println(err.Error())
 	}
-	defer conn.Close()
+	defer func(conn *amqp091.Connection) {
+		err := conn.Close()
+		if err != nil {
+			log.Println(err.Error())
+		}
+	}(conn)
 
-	// Create a new consumer
-	consumer, err := conn.CreateConsumer(stationName, consumerName, memphis.PullInterval(1*time.Second))
+	ch, err := conn.Channel()
 	if err != nil {
-		log.Println("2" + err.Error())
+		log.Println(err.Error())
 	}
+	defer func(ch *amqp091.Channel) {
+		err := ch.Close()
+		if err != nil {
+			log.Println(err.Error())
+		}
+	}(ch)
 
-	// Consume messages and send email
-	err = broker.ConsumeMessage(consumer, Config)
+	messages, err := ch.Consume(
+		"otp-queue",
+		"",
+		true,
+		false,
+		false,
+		false,
+		nil,
+	)
 	if err != nil {
-		log.Println("3" + err.Error())
+		log.Println(err.Error())
 	}
 
+	forever := make(chan bool)
+	go func() {
+		for d := range messages {
+			fmt.Println(d.Body, d.MessageId)
+		}
+	}()
+	<-forever
 }
