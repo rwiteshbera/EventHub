@@ -18,8 +18,6 @@ services:
     container_name: EmailService
     ports:
       - "5001:5001"
-    depends_on:
-      - memphis-rest-gateway
     restart: on-failure
     env_file:
       - EmailService/.env
