@@ -15,7 +15,7 @@ type Mail struct {
 	Body    string
 }
 
-func SendMail(toMail string, subject string, body string, config config.Config) error {
+func SendMail(toMail string, subject string, body string, config *config.Config) error {
 	if toMail == "" || subject == "" || body == "" {
 		return errors.New("required parameters and cannot be empty")
 	}

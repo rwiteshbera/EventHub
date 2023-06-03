@@ -12,3 +12,9 @@ EventHub
 docker-compose up 
 ```
 
+RabbitMQ Administrator Default Credential
+```text
+username: guest
+password: guest
+```
+

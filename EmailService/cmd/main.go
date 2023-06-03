@@ -5,6 +5,7 @@ import (
 	"github.com/rabbitmq/amqp091-go"
 	"log"
 	"mailService/config"
+	"mailService/mailer"
 )
 
 func main() {
@@ -49,7 +50,10 @@ func main() {
 	forever := make(chan bool)
 	go func() {
 		for d := range messages {
-			fmt.Println(d.Body, d.MessageId)
+			err := mailer.SendMail(d.MessageId, "EventHub OTP Verification", string(d.Body), Config)
+			if err != nil {
+				return
+			}
 		}
 	}()
 	<-forever
