@@ -7,6 +7,7 @@ import (
 	"eventCatalogService/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 // Create a new event
@@ -60,7 +61,18 @@ func DisplayUpcomingEvents(server *api.Server) gin.HandlerFunc {
 			return
 		}
 
-		db.Where("is_online = true").Find(&result)
+		db.Find(&result)
+
+		for i := range result {
+			if time.Now().Before(result[i].StartTime) {
+				result[i].Status = "Upcoming"
+			} else if !time.Now().After(result[i].EndTime) {
+				result[i].Status = "Open"
+			} else {
+				result[i].Status = "Ended"
+			}
+		}
+
 		ctx.JSON(http.StatusOK, gin.H{"data": result})
 	}
 }
