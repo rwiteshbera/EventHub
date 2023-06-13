@@ -12,7 +12,7 @@ type EventInformation struct {
 	EndTime     time.Time `json:"end_time"`
 	Location    string    `json:"location"`
 	TimeZone    string    `json:"time_zone"`
-	IsOnline    bool      `json:"is_online"`
+	Status      string    `json:"status"` // UPCOMING, OPEN, ENDED
 	URL         string    `json:"url"`
 	OrganizerID int       `json:"-"`
 }
