@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/redis/go-redis/v9"
+	_ "github.com/redis/go-redis/v9"
 	"net/http"
 	"time"
 	"userService/api"
@@ -122,7 +123,13 @@ func VerifyOTP(server *api.Server) gin.HandlerFunc {
 
 		// Create Client in Redis
 		redisDB := database.CreateRedisClient(&server.Config, 0)
-		defer redisDB.Close()
+		defer func(redisDB *redis.Client) {
+			err := redisDB.Close()
+			if err != nil {
+				LogError(ctx, http.StatusInternalServerError, err)
+				return
+			}
+		}(redisDB)
 
 		// Check if email is present
 		isEmailPresent, err4 := redisDB.Exists(ctx, currentUserEmail).Result()

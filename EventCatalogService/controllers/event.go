@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"eventCatalogService/api"
 	"eventCatalogService/database"
 	"eventCatalogService/models"
@@ -33,6 +34,16 @@ func CreateEvent(server *api.Server) gin.HandlerFunc {
 			return
 		}
 
+		// Check if the date are valid or not
+		if time.Now().After(eventInfo.StartTime) || time.Now().After(eventInfo.EndTime) {
+			LogError(ctx, http.StatusBadRequest, errors.New("provide valid date"), 06)
+			return
+		}
+		if eventInfo.StartTime.After(eventInfo.EndTime) {
+			LogError(ctx, http.StatusBadRequest, errors.New("provide valid date"), 07)
+			return
+		}
+
 		eventInfo.ID, err = utils.GenerateUUID()
 		if err != nil {
 			LogError(ctx, http.StatusBadRequest, err, 04)
@@ -53,7 +64,7 @@ func CreateEvent(server *api.Server) gin.HandlerFunc {
 // List all upcoming events
 func DisplayUpcomingEvents(server *api.Server) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var result []models.EventInformation
+		var data []models.EventInformation
 
 		db, err := database.ConnectPostgres(server)
 		if err != nil {
@@ -61,18 +72,31 @@ func DisplayUpcomingEvents(server *api.Server) gin.HandlerFunc {
 			return
 		}
 
-		db.Find(&result)
+		db.Find(&data)
 
-		for i := range result {
-			if time.Now().Before(result[i].StartTime) {
+		var result = make([]models.DisplayEventInfo, len(data))
+
+		for i := range data {
+			result[i].ID = data[i].ID
+			result[i].Name = data[i].Name
+			result[i].Description = data[i].Description
+			result[i].Location = data[i].Location
+			result[i].TimeZone = data[i].TimeZone
+			result[i].URL = data[i].URL
+			result[i].OrganizerID = data[i].OrganizerID
+
+			result[i].StartTimeString = data[i].StartTime.Format("01-02-2006 Monday")
+			result[i].EndTimeString = data[i].EndTime.Format("01-02-2006 Monday")
+
+			if time.Now().Before(data[i].StartTime) {
 				result[i].Status = "Upcoming"
-			} else if !time.Now().After(result[i].EndTime) {
+			} else if !time.Now().After(data[i].EndTime) {
 				result[i].Status = "Open"
 			} else {
 				result[i].Status = "Ended"
 			}
 		}
 
-		ctx.JSON(http.StatusOK, gin.H{"data": result})
+		ctx.JSON(http.StatusOK, gin.H{"result": result})
 	}
 }
