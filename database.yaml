@@ -28,6 +28,8 @@ services:
     container_name: postgres
     env_file:
       - EventCatalogService/.env
+    environment:
+      - TZ=Asia/Kolkata
     ports:
       - "5432:5432"
     restart: on-failure
