@@ -4,9 +4,10 @@ EventHub
 1. Go
 2. Redis
 3. RabbitMQ
-4. MongoDB
-5. Postgres
-6. Docker
+4. gRPC
+5. MongoDB
+6. Postgres
+7. Docker
 
 ```bash
 docker-compose up 

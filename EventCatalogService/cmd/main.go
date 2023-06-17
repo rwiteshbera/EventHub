@@ -2,7 +2,6 @@ package main
 
 import (
 	"eventCatalogService/api"
-	"eventCatalogService/grpc"
 	"eventCatalogService/routes"
 	"log"
 )
@@ -15,7 +14,6 @@ func main() {
 
 	routes.Routes(server)
 
-	go grpc.GRPCServe()
 	err = server.Start()
 	if err != nil {
 		log.Fatalln("unable to start the server: ", err.Error())
