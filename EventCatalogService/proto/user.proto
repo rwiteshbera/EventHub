@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package rwitesh;
+
+option go_package = "./pb";
+
+service Authorization {
+  rpc AuthorizeUser(UserPayload) returns (AuthToken){};
+}
+
+message AuthToken {
+  string userToken = 1;
+}
+
+message UserPayload{
+  string userEmail = 1;
+}

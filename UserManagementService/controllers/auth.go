@@ -158,10 +158,7 @@ func VerifyOTP(server *api.Server) gin.HandlerFunc {
 
 				redisDB.Del(ctx, currentUserEmail) // After validation, delete the OTP from Redis
 
-				// set the token in context
-				ctx.Request.Header.Set("authorization", token)
-
-				ctx.JSON(http.StatusOK, gin.H{"message": "verified", "count": count, "auth": token})
+				ctx.JSON(http.StatusOK, gin.H{"message": "verified", "auth": token})
 
 			} else {
 				ctx.JSON(http.StatusOK, gin.H{"message": "incorrect otp"})
