@@ -5,7 +5,7 @@ package rwitesh;
 option go_package = "./pb";
 
 service Authorization {
-  rpc AuthorizeUser(UserPayload) returns (AuthToken){};
+  rpc AuthorizeUser(AuthToken) returns (UserPayload){};
 }
 
 message AuthToken {

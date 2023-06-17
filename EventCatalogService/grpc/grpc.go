@@ -2,37 +2,25 @@ package grpc
 
 import (
 	"context"
+	"errors"
 	"eventCatalogService/pb"
-	"fmt"
 	"google.golang.org/grpc"
-	"log"
-	"net"
 )
 
-type Server struct {
-	pb.AuthorizationServer
-}
+func GRPCServe(token string) (*pb.UserPayload, error) {
+	var rpcConn *grpc.ClientConn
+	rpcConn, err := grpc.Dial(":9051", grpc.WithInsecure())
+	if err != nil {
+		return nil, err
+	}
+	defer rpcConn.Close()
+	client := pb.NewAuthorizationClient(rpcConn)
 
-func (s *Server) AuthorizeUser(ctx context.Context, req *pb.UserPayload) (*pb.AuthToken, error) {
-	fmt.Println(req.GetUserEmail())
-	res := &pb.AuthToken{
-		UserToken: "abcd",
+	res, err := client.AuthorizeUser(context.Background(), &pb.AuthToken{
+		UserToken: token,
+	})
+	if err != nil {
+		return nil, errors.New("authorization failed")
 	}
 	return res, nil
-}
-
-func GRPCServe() {
-	listener, err := net.Listen("tcp", ":9051")
-	if err != nil {
-		log.Fatalln(err.Error())
-		return
-	}
-
-	rpcServer := grpc.NewServer()
-	pb.RegisterAuthorizationServer(rpcServer, &Server{})
-
-	if err = rpcServer.Serve(listener); err != nil {
-		log.Fatalln(err.Error())
-		return
-	}
 }

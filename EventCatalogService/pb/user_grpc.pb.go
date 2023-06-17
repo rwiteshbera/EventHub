@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthorizationClient interface {
-	AuthorizeUser(ctx context.Context, in *UserPayload, opts ...grpc.CallOption) (*AuthToken, error)
+	AuthorizeUser(ctx context.Context, in *AuthToken, opts ...grpc.CallOption) (*UserPayload, error)
 }
 
 type authorizationClient struct {
@@ -33,8 +33,8 @@ func NewAuthorizationClient(cc grpc.ClientConnInterface) AuthorizationClient {
 	return &authorizationClient{cc}
 }
 
-func (c *authorizationClient) AuthorizeUser(ctx context.Context, in *UserPayload, opts ...grpc.CallOption) (*AuthToken, error) {
-	out := new(AuthToken)
+func (c *authorizationClient) AuthorizeUser(ctx context.Context, in *AuthToken, opts ...grpc.CallOption) (*UserPayload, error) {
+	out := new(UserPayload)
 	err := c.cc.Invoke(ctx, "/rwitesh.Authorization/AuthorizeUser", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func (c *authorizationClient) AuthorizeUser(ctx context.Context, in *UserPayload
 // All implementations must embed UnimplementedAuthorizationServer
 // for forward compatibility
 type AuthorizationServer interface {
-	AuthorizeUser(context.Context, *UserPayload) (*AuthToken, error)
+	AuthorizeUser(context.Context, *AuthToken) (*UserPayload, error)
 	mustEmbedUnimplementedAuthorizationServer()
 }
 
@@ -54,7 +54,7 @@ type AuthorizationServer interface {
 type UnimplementedAuthorizationServer struct {
 }
 
-func (UnimplementedAuthorizationServer) AuthorizeUser(context.Context, *UserPayload) (*AuthToken, error) {
+func (UnimplementedAuthorizationServer) AuthorizeUser(context.Context, *AuthToken) (*UserPayload, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthorizeUser not implemented")
 }
 func (UnimplementedAuthorizationServer) mustEmbedUnimplementedAuthorizationServer() {}
@@ -71,7 +71,7 @@ func RegisterAuthorizationServer(s grpc.ServiceRegistrar, srv AuthorizationServe
 }
 
 func _Authorization_AuthorizeUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserPayload)
+	in := new(AuthToken)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -83,7 +83,7 @@ func _Authorization_AuthorizeUser_Handler(srv interface{}, ctx context.Context, 
 		FullMethod: "/rwitesh.Authorization/AuthorizeUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthorizationServer).AuthorizeUser(ctx, req.(*UserPayload))
+		return srv.(AuthorizationServer).AuthorizeUser(ctx, req.(*AuthToken))
 	}
 	return interceptor(ctx, in, info, handler)
 }

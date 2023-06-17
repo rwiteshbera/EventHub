@@ -3,8 +3,6 @@ package utils
 import (
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"net/http"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -33,7 +31,7 @@ func GenerateToken(email string, jwtSecret string) (signedToken string, err erro
 }
 
 // Validate JWT Token
-func validateToken(signedToken string, jwtSecret string) (claims *SignedDetails, err error) {
+func ValidateToken(signedToken string, jwtSecret string) (claims *SignedDetails, err error) {
 	token, err := jwt.ParseWithClaims(
 		signedToken,
 		&SignedDetails{},
@@ -53,26 +51,4 @@ func validateToken(signedToken string, jwtSecret string) (claims *SignedDetails,
 	}
 
 	return claims, nil
-}
-
-func Authenticate(jwtSecret string) gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		clientToken := ctx.Request.Header.Get("authorization")
-
-		if clientToken == "" {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "no authorization header provided"})
-			ctx.Abort()
-			return
-		}
-
-		claims, err := validateToken(clientToken, jwtSecret)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err})
-			ctx.Abort()
-		}
-
-		ctx.Set("email", claims.Email)
-		ctx.Set("uid", claims.ID)
-		ctx.Next()
-	}
 }

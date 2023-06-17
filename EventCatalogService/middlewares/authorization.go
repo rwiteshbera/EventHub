@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"eventCatalogService/grpc"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"net/http"
@@ -38,10 +39,14 @@ func Authorization() gin.HandlerFunc {
 			return
 		}
 
-		//AccessToken := fields[1]
-
-		//context.JSON(http.StatusOK, gin.H{"msg": payload})
-		//context.Set(AuthorizationPayloadKey, payload)
-		//context.Next()
+		AccessToken := fields[1]
+		payload, err := grpc.GRPCServe(AccessToken)
+		if err != nil {
+			context.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
+		}
+		context.JSON(http.StatusOK, gin.H{"userPayload": payload})
+		context.Set(AuthorizationPayloadKey, payload)
+		context.Next()
 	}
 }
