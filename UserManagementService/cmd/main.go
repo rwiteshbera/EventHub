@@ -15,7 +15,7 @@ func main() {
 
 	routes.AuthenticationRoutes(server)
 
-	go grpc.GRPCListen(server.Config.JWT_SECRET)
+	go grpc.GRPCListen(server)
 	err = server.Start()
 	if err != nil {
 		log.Fatalln("unable to start the server: ", err.Error())

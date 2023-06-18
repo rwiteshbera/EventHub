@@ -45,8 +45,7 @@ func Authorization() gin.HandlerFunc {
 			context.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
-		context.JSON(http.StatusOK, gin.H{"userPayload": payload})
-		context.Set(AuthorizationPayloadKey, payload)
+		context.Set(AuthorizationPayloadKey, payload.UserEmail)
 		context.Next()
 	}
 }

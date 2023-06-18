@@ -7,7 +7,6 @@
 package pb
 
 import (
-	"context"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -74,16 +73,6 @@ type UserPayload struct {
 	unknownFields protoimpl.UnknownFields
 
 	UserEmail string `protobuf:"bytes,1,opt,name=userEmail,proto3" json:"userEmail,omitempty"`
-}
-
-func (x *UserPayload) AuthorizeUser(ctx context.Context, token *AuthToken) (*UserPayload, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (x *UserPayload) mustEmbedUnimplementedAuthorizationServer() {
-	//TODO implement me
-	panic("implement me")
 }
 
 func (x *UserPayload) Reset() {
