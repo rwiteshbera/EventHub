@@ -34,10 +34,10 @@ docker-compose -f broker.yaml -f database.yaml up
 ```
 2. If you want to run a specific Gin server for a particular service, navigate to the respective service's directory and execute the following command. Make sure you provided the environment variable to run the service properly.
 ```bash
-cd user-management-service
+cd userManagementService
 go run ./cmd/main.go
 ``` 
-Replace user-management-service with the directory name of the service you want to run. Repeat this step for any other services you wish to start.
+Replace userManagementService with the directory name of the service you want to run. Repeat this step for any other services you wish to start.
 
 RabbitMQ Administrator Default Credential
 ```text
