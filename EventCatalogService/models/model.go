@@ -5,15 +5,15 @@ import (
 )
 
 type EventInformation struct {
-	ID          string    `json:"event_id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	StartTime   time.Time `json:"start_time"`
-	EndTime     time.Time `json:"end_time"`
-	Location    string    `json:"location"`
-	TimeZone    string    `json:"time_zone"`
-	URL         string    `json:"url"`
-	OrganizerID int       `json:"-"`
+	ID             string    `json:"event_id"`
+	Name           string    `json:"name"`
+	Description    string    `json:"description"`
+	StartTime      time.Time `json:"start_time"`
+	EndTime        time.Time `json:"end_time"`
+	Location       string    `json:"location"`
+	TimeZone       string    `json:"time_zone"`
+	URL            string    `json:"url"`
+	OrganizerEmail string    `json:"-"`
 }
 
 type DisplayEventInfo struct {
@@ -26,5 +26,5 @@ type DisplayEventInfo struct {
 	TimeZone        string `json:"time_zone"`
 	Status          string `json:"status"` // UPCOMING, OPEN, ENDED
 	URL             string `json:"url"`
-	OrganizerID     int    `json:"-"`
+	OrganizerEmail  string `json:"organizer-email"`
 }

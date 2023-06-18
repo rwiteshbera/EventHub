@@ -4,8 +4,10 @@ import (
 	"errors"
 	"eventCatalogService/api"
 	"eventCatalogService/database"
+	"eventCatalogService/middlewares"
 	"eventCatalogService/models"
 	"eventCatalogService/utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -44,11 +46,16 @@ func CreateEvent(server *api.Server) gin.HandlerFunc {
 			return
 		}
 
+		// Generate UUID for event
 		eventInfo.ID, err = utils.GenerateUUID()
 		if err != nil {
 			LogError(ctx, http.StatusBadRequest, err, 04)
 			return
 		}
+
+		// Fetch organizer email
+		organizerPayload, _ := ctx.Get(middlewares.AuthorizationPayloadKey)
+		eventInfo.OrganizerEmail = fmt.Sprintf("%s", organizerPayload)
 
 		result := db.Create(&eventInfo)
 		if result.Error != nil {
@@ -83,8 +90,7 @@ func DisplayUpcomingEvents(server *api.Server) gin.HandlerFunc {
 			result[i].Location = data[i].Location
 			result[i].TimeZone = data[i].TimeZone
 			result[i].URL = data[i].URL
-			result[i].OrganizerID = data[i].OrganizerID
-
+			result[i].OrganizerEmail = data[i].OrganizerEmail
 			result[i].StartTimeString = data[i].StartTime.Format("01-02-2006 Monday")
 			result[i].EndTimeString = data[i].EndTime.Format("01-02-2006 Monday")
 
