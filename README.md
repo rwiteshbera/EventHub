@@ -32,7 +32,7 @@ The project is still actively being developed, and future updates will include t
 ```bash
 docker-compose -f broker.yaml -f database.yaml up
 ```
-2. If you want to run a specific Gin server for a particular service, navigate to the respective service's directory and execute the following command:
+2. If you want to run a specific Gin server for a particular service, navigate to the respective service's directory and execute the following command. Make sure you provided the environment variable to run the service properly.
 ```bash
 cd user-management-service
 go run ./cmd/main.go
