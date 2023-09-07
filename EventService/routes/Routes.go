@@ -11,4 +11,5 @@ func Routes(server *api.Server) {
 
 	server.Router.Use(middlewares.Authorization())
 	server.Router.POST("/event", controllers.CreateEvent(server))
+	server.Router.POST("/register", controllers.RegisterEvent(server))
 }

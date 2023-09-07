@@ -16,6 +16,11 @@ type EventInformation struct {
 	OrganizerEmail string    `json:"-"`
 }
 
+type RegisteredParticipantInformation struct {
+	UserEmail string `json:"email"`
+	EventId   string `json:"event_id"`
+}
+
 type DisplayEventInfo struct {
 	ID              string `json:"event_id"`
 	Name            string `json:"name"`

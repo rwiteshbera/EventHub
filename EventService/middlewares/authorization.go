@@ -2,10 +2,11 @@ package middlewares
 
 import (
 	"eventCatalogService/grpc"
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
 	"net/http"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 type SignedDetails struct {
@@ -14,28 +15,28 @@ type SignedDetails struct {
 }
 
 const (
-	AuthorizationHeader     = "Authorization"
+	AuthorizationCookieName = "Authorization"
 	AuthorizationTypeBearer = "bearer"
 	AuthorizationPayloadKey = "payload"
 )
 
 func Authorization() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		authToken := context.GetHeader(AuthorizationHeader)
-		if authToken == "" {
+		authToken, err := context.Cookie(AuthorizationCookieName)
+		if err != nil {
 			context.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "authorization is not provided"})
 			return
 		}
 
 		fields := strings.Fields(authToken)
 		if len(fields) < 2 {
-			context.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid authorization header"})
+			context.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid authorization"})
 			return
 		}
 
 		AuthorizationType := strings.ToLower(fields[0])
 		if AuthorizationType != AuthorizationTypeBearer {
-			context.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unsupported authorization header"})
+			context.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unsupported authorization"})
 			return
 		}
 

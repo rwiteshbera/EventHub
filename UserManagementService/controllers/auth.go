@@ -3,8 +3,6 @@ package controllers
 import (
 	"context"
 	"errors"
-	"github.com/redis/go-redis/v9"
-	_ "github.com/redis/go-redis/v9"
 	"net/http"
 	"time"
 	"userService/api"
@@ -12,6 +10,9 @@ import (
 	"userService/database"
 	"userService/models"
 	"userService/utils"
+
+	"github.com/redis/go-redis/v9"
+	_ "github.com/redis/go-redis/v9"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -158,7 +159,10 @@ func VerifyOTP(server *api.Server) gin.HandlerFunc {
 
 				redisDB.Del(ctx, currentUserEmail) // After validation, delete the OTP from Redis
 
-				ctx.JSON(http.StatusOK, gin.H{"message": "verified", "auth": token})
+				// Set cookies [auth token]
+				ctx.SetCookie("Authorization", "bearer "+token, 0, "/", server.Config.SERVER_HOST, false, true)
+
+				ctx.JSON(http.StatusOK, gin.H{"message": "verified"})
 
 			} else {
 				ctx.JSON(http.StatusOK, gin.H{"message": "incorrect otp"})

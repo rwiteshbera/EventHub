@@ -3,15 +3,15 @@ package grpc
 import (
 	"context"
 	"errors"
-	"fmt"
-	"go.mongodb.org/mongo-driver/bson"
-	"google.golang.org/grpc"
 	"log"
 	"net"
 	api2 "userService/api"
 	"userService/database"
 	"userService/pb"
 	"userService/utils"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"google.golang.org/grpc"
 )
 
 type AuthServer struct {
@@ -21,7 +21,6 @@ type AuthServer struct {
 }
 
 func (s *AuthServer) AuthorizeUser(ctx context.Context, req *pb.AuthToken) (*pb.UserPayload, error) {
-	fmt.Println(req.GetUserToken())
 	// Read the auth token sent by Event Catalog Service
 	authToken := req.GetUserToken()
 

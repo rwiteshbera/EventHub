@@ -22,6 +22,8 @@ services:
     restart: on-failure
     ports:
       - "27017:27017"
+    volumes:
+      - ./volumes/mongo:/data/db
 
   postgres:
     image: postgres:15.3
@@ -34,7 +36,7 @@ services:
       - "5432:5432"
     restart: on-failure
     volumes:
-      - /var/lib/postgresql/data
+      - ./volumes/pg:/var/lib/postgresql/data
 
 
 
